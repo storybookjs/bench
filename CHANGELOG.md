@@ -1,3 +1,7 @@
+### 0.2.2
+
+Close `puppeteer` browser asynchronously
+
 ### 0.2.1
 
 `puppeteer` args for running CI
