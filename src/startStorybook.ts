@@ -44,7 +44,7 @@ export const startStorybook = async () => {
       resolveBuild();
     }
   });
-  child.on('close', () => {
+  child.on('exit', () => {
     logger.log('closing start-storybook');
     resolveRender();
   });
