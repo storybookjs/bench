@@ -1,3 +1,7 @@
+### 0.2.5
+
+Exit on completion
+
 ### 0.2.4
 
 Resolve render on exit
