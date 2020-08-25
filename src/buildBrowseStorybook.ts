@@ -4,6 +4,7 @@ import du from 'du';
 import fs from 'fs';
 import path from 'path';
 import rimraf from 'rimraf';
+import puppeteer from 'puppeteer';
 
 import { resetStats, makeStatsServer } from './helpers/timing';
 import { makeStaticServer, STATIC_STORYBOOK_PORT } from './helpers/static';
@@ -80,23 +81,20 @@ export const buildBrowseStorybook = async () => {
   });
 
   const stats = resetStats();
-  const child = spawn(
-    'open',
-    [`http://127.0.0.1:${STATIC_STORYBOOK_PORT}/index.html`],
-    {
-      stdio: STDIO,
-    }
-  );
+  const browser = await puppeteer.launch();
 
   const staticServer = await makeStaticServer();
 
   let statsServer: any;
   statsServer = await makeStatsServer(stats, async () => {
-    child.kill();
+    await browser.close();
     await statsServer.stop();
     await staticServer.stop();
     resolve();
   });
+
+  const page = await browser.newPage();
+  await page.goto(`http://127.0.0.1:${STATIC_STORYBOOK_PORT}/index.html`);
 
   await promise;
 
