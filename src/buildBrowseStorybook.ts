@@ -13,6 +13,8 @@ import { format } from './helpers/format';
 const STDIO = 'inherit';
 const BUILD_DIR = 'storybook-static';
 
+const logger = console;
+
 const bundleSize = async (buildDir: string, prefix: string) => {
   const files = fs.readdirSync(buildDir);
   const mapFilePrefix = files
@@ -87,9 +89,13 @@ export const buildBrowseStorybook = async () => {
 
   let statsServer: any;
   statsServer = await makeStatsServer(stats, async () => {
-    await statsServer.stop();
-    await staticServer.stop();
+    logger.log('resolving browse');
     resolve();
+    logger.log('stopping stats server');
+    await statsServer.stop();
+    logger.log('stopping static server');
+    await staticServer.stop();
+    logger.log('closing puppeteer');
     await browser.close();
   });
 

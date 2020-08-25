@@ -7,6 +7,8 @@ import { format } from './helpers/format';
 const WEBPACK_REGEX = /^.\s+(\d*\.?\d*) s for manager and (\d*\.?\d*) s for preview/gm;
 const DEV_PORT = 9999;
 
+const logger = console;
+
 export const startStorybook = async () => {
   console.log('measuring start-storybook');
 
@@ -43,6 +45,7 @@ export const startStorybook = async () => {
     }
   });
   child.on('close', () => {
+    logger.log('closing start-storybook');
     resolveRender();
   });
   let statsServer: Hapi.Server;
@@ -50,8 +53,11 @@ export const startStorybook = async () => {
   const browser = await puppeteer.launch({ args: puppeteerArgs });
 
   statsServer = await makeStatsServer(stats, async () => {
-    await statsServer.stop();
+    logger.log('killing start-storybook');
     child.kill();
+    logger.log('stopping stats server');
+    await statsServer.stop();
+    logger.log('closing puppeteer');
     await browser.close();
   });
 
