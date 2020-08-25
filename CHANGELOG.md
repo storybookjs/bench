@@ -1,3 +1,7 @@
+### 0.2.3
+
+Better logging
+
 ### 0.2.2
 
 Close `puppeteer` browser asynchronously
