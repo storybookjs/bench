@@ -1,12 +1,12 @@
 import { Tick, timers } from 'exectimer';
-import { sync as spawnSync, spawn } from 'cross-spawn';
+import { sync as spawnSync } from 'cross-spawn';
 import du from 'du';
 import fs from 'fs';
 import path from 'path';
 import rimraf from 'rimraf';
 import puppeteer from 'puppeteer';
 
-import { resetStats, makeStatsServer } from './helpers/timing';
+import { resetStats, makeStatsServer, puppeteerArgs } from './helpers/timing';
 import { makeStaticServer, STATIC_STORYBOOK_PORT } from './helpers/static';
 import { format } from './helpers/format';
 
@@ -81,7 +81,7 @@ export const buildBrowseStorybook = async () => {
   });
 
   const stats = resetStats();
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({ args: puppeteerArgs });
 
   const staticServer = await makeStaticServer();
 

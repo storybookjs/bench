@@ -1,5 +1,5 @@
 import { spawn } from 'cross-spawn';
-import { resetStats, makeStatsServer } from './helpers/timing';
+import { resetStats, makeStatsServer, puppeteerArgs } from './helpers/timing';
 import Hapi from '@hapi/hapi';
 import puppeteer from 'puppeteer';
 import { format } from './helpers/format';
@@ -47,7 +47,7 @@ export const startStorybook = async () => {
   });
   let statsServer: Hapi.Server;
 
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({ args: puppeteerArgs });
 
   statsServer = await makeStatsServer(stats, async () => {
     await statsServer.stop();
