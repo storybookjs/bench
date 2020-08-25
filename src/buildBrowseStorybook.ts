@@ -87,10 +87,10 @@ export const buildBrowseStorybook = async () => {
 
   let statsServer: any;
   statsServer = await makeStatsServer(stats, async () => {
-    await browser.close();
     await statsServer.stop();
     await staticServer.stop();
     resolve();
+    await browser.close();
   });
 
   const page = await browser.newPage();

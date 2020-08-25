@@ -51,8 +51,8 @@ export const startStorybook = async () => {
 
   statsServer = await makeStatsServer(stats, async () => {
     await statsServer.stop();
-    await browser.close();
     child.kill();
+    await browser.close();
   });
 
   await buildFinished;
