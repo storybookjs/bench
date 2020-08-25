@@ -1,3 +1,7 @@
+### 0.2.4
+
+Resolve render on exit
+
 ### 0.2.3
 
 Better logging
