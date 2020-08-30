@@ -1,3 +1,7 @@
+### 0.3.0
+
+Upload results to bigquery
+
 ### 0.2.5
 
 Exit on completion
