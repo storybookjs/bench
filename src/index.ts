@@ -41,12 +41,9 @@ export const main = async () => {
 
   const installCommand = program.args[0];
   const label: string = program.upload;
-  try {
-    const bench = await benchmark(installCommand);
-    if (label) {
-      await upload(bench, label);
-    }
-  } catch (err) {
-    console.log(err);
+
+  const bench = await benchmark(installCommand);
+  if (label) {
+    await upload(bench, label);
   }
 };
