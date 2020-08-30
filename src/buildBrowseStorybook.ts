@@ -109,10 +109,12 @@ export const buildBrowseStorybook = async () => {
     },
     size: {},
   };
+
+  const bundles = await bundleSizes(BUILD_DIR);
   const browse = {
     size: {
       total: await du(BUILD_DIR),
-      bundles: await bundleSizes(BUILD_DIR),
+      ...bundles,
     },
     time: stats.time,
   };
