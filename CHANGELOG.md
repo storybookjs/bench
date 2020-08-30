@@ -1,3 +1,7 @@
+### 0.3.1
+
+Fix error handling and bundle size structure
+
 ### 0.3.0
 
 Upload results to bigquery
