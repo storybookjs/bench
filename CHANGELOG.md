@@ -1,3 +1,7 @@
+### 0.3.2
+
+Add CIRCLE_BRANCH/SHA1 support
+
 ### 0.3.1
 
 Fix error handling and bundle size structure
