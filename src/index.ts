@@ -9,7 +9,7 @@ import { startStorybook } from './startStorybook';
 import { upload } from './upload';
 import { formatNumber } from './helpers/format';
 
-const stub = async (arg?: any) => ({ time: {}, size: {} });
+const stub = (arg?: any) => ({ time: {}, size: {} });
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 const save = async (results: Record<string, any>, label: string) => {

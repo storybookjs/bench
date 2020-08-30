@@ -1,9 +1,13 @@
 import { BigQuery } from '@google-cloud/bigquery';
 import { sync as spawnSync } from 'cross-spawn';
+import { GCP_CREDENTIALS, CIRCLE_BRANCH, CIRCLE_SHA1 } from './environment';
 import fs from 'fs';
 
 const _gitHelper = (args: string[]): string => {
   const result = spawnSync('git', args, { stdio: 'pipe' });
+  if (result.error) {
+    throw result.error;
+  }
   return result.output.join('\n').trim();
 };
 
@@ -15,11 +19,10 @@ export const upload = async (
   label: string
 ) => {
   console.log('uploading to label', label);
-  const GCP_CREDENTIALS = JSON.parse(process.env.GCP_CREDENTIALS || '');
 
   const row = {
-    branch: gitBranch(),
-    commit: gitCommit(),
+    branch: CIRCLE_BRANCH || gitBranch(),
+    commit: CIRCLE_SHA1 || gitCommit(),
     timestamp: new Date().toISOString(),
     label,
     installTime: install.time.total,
