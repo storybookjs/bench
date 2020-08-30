@@ -8,12 +8,16 @@ const mapValuesDeep = (obj: any, formatFn: any): any =>
     ? mapValues(obj, val => mapValuesDeep(val, formatFn))
     : formatFn(obj);
 
-export const prettyJSON = (value: any, formatFn: any) => {
-  return mapValuesDeep(value, formatFn);
-  // return JSON.stringify(formatted, null, 2);
-};
-
-export const format = (result: Record<string, any>) => ({
-  time: prettyJSON(result.time, prettyTime),
-  size: prettyJSON(result.size, prettyBytes),
+export const formatString = (result: Record<string, any>) => ({
+  time: mapValuesDeep(result.time, prettyTime),
+  size: mapValuesDeep(result.size, prettyBytes),
 });
+
+const toMS = (val: number) => Math.round(val / 1000000);
+const toKB = (val: number) => Math.round(val / 1024);
+
+export const formatNumber = (result: Record<string, any>) =>
+  mapValues(result, val => ({
+    time: mapValuesDeep(val.time, toMS),
+    size: mapValuesDeep(val.size, toKB),
+  }));

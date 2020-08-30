@@ -8,7 +8,6 @@ import puppeteer from 'puppeteer';
 
 import { resetStats, makeStatsServer, puppeteerArgs } from './helpers/timing';
 import { makeStaticServer, STATIC_STORYBOOK_PORT } from './helpers/static';
-import { format } from './helpers/format';
 
 const STDIO = 'inherit';
 const BUILD_DIR = 'storybook-static';
@@ -104,19 +103,19 @@ export const buildBrowseStorybook = async () => {
 
   await promise;
 
-  const build = format({
+  const build = {
     time: {
       build: timers.build.duration(),
     },
     size: {},
-  });
-  const browse = format({
+  };
+  const browse = {
     size: {
       total: await du(BUILD_DIR),
       bundles: await bundleSizes(BUILD_DIR),
     },
     time: stats.time,
-  });
+  };
 
   return { build, browse };
 };

@@ -1,50 +1,52 @@
 import jsonexport from 'jsonexport';
+import program from 'commander';
 import fs from 'fs';
 
 import { cleanup, buildBrowseStorybook } from './buildBrowseStorybook';
-import { installAddonBench } from './installAddonBench';
 import { installStorybook } from './installStorybook';
 import { startStorybook } from './startStorybook';
+
+import { upload } from './upload';
+import { formatNumber } from './helpers/format';
 
 const stub = async (arg?: any) => ({ time: {}, size: {} });
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-const save = async (results: Record<string, any>) => {
-  console.log('saving', JSON.stringify(results));
-  const [key, val] = Object.entries(results)[0];
-  const csv = await jsonexport(val);
-  fs.writeFileSync(`${key}.csv`, csv);
+const save = async (results: Record<string, any>, label: string) => {
+  const csv = await jsonexport(results);
+  fs.writeFileSync(`${label}.csv`, csv);
+  fs.writeFileSync(`${label}.json`, JSON.stringify(results));
 };
 
 const benchmark = async (installCommand: string) => {
   await cleanup();
 
   const install = await installStorybook(installCommand);
-  // await save({ install });
-  await installAddonBench();
-
   const start = await startStorybook();
-  // await save({ start });
-
   const { build, browse } = await buildBrowseStorybook();
-  // await save({ build });
 
-  await save({
-    bench: {
-      install,
-      start,
-      build,
-      browse,
-    },
-  });
+  const bench = formatNumber({ install, start, build, browse });
+  await save(bench, 'bench');
+
+  return bench;
 };
 
-const safeBenchmark = async (installCommand: string) => {
+export const main = async () => {
+  program.arguments('<installCommand>');
+  program.option('-u, --upload <label>');
+  program.parse(process.argv);
+  if (!program.args.length) {
+    program.help();
+  }
+
+  const installCommand = program.args[0];
+  const label: string = program.upload;
   try {
-    await benchmark(installCommand);
+    const bench = await benchmark(installCommand);
+    if (label) {
+      await upload(bench, label);
+    }
   } catch (err) {
     console.log(err);
   }
 };
-
-export default () => safeBenchmark(process.argv[2]);

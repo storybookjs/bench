@@ -1,7 +1,7 @@
 import { sync as spawnSync } from 'cross-spawn';
 import du from 'du';
 import { Tick, timers } from 'exectimer';
-import { format } from './helpers/format';
+import { installAddonBench } from './installAddonBench';
 
 const NODE_MODULES = 'node_modules';
 const STDIO = 'inherit';
@@ -20,8 +20,12 @@ export const installStorybook = async (installCommand: string) => {
     done();
   });
   const finalSize = await du(NODE_MODULES);
-  return format({
+
+  // Add instrumentation addon AFTER we've measured install size
+  await installAddonBench();
+
+  return {
     size: { total: finalSize - initialSize },
     time: { total: timers.install.duration() },
-  });
+  };
 };

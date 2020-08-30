@@ -2,7 +2,6 @@ import { spawn } from 'cross-spawn';
 import { resetStats, makeStatsServer, puppeteerArgs } from './helpers/timing';
 import Hapi from '@hapi/hapi';
 import puppeteer from 'puppeteer';
-import { format } from './helpers/format';
 
 const WEBPACK_REGEX = /^.\s+(\d*\.?\d*) s for manager and (\d*\.?\d*) s for preview/gm;
 const DEV_PORT = 9999;
@@ -73,11 +72,11 @@ export const startStorybook = async () => {
     previewWebpack,
   };
 
-  return format({
+  return {
     time: {
       ...webpackStats,
       ...stats.time,
     },
     size: {},
-  });
+  };
 };

@@ -1,4 +1,4 @@
 #!/usr/bin/env node
 
-const main = require('../dist/index.js').default;
+const { main } = require('../dist/index.js');
 main().then(() => process.exit());
