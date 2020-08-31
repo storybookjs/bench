@@ -1,3 +1,7 @@
+### 0.4.0
+
+Upload based on SB_BENCH_UPLOAD env variable
+
 ### 0.3.2
 
 Add CIRCLE_BRANCH/SHA1 support
