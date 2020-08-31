@@ -19,4 +19,23 @@ This will:
   - Measure page load time
   - Measure bundle sizes
 
-It outputs all results to a file, `bench.csv`.
+It outputs all results to the files `bench.csv` and `bench.json`.
+
+## Flags
+
+It also accepts the following flags:
+
+| option          | description                                                                 |
+| --------------- | --------------------------------------------------------------------------- |
+| --label <label> | Save as <label>.csv/json and upload with <label> if SB_BENCH_UPLOAD is true |
+
+## Environment variables
+
+And consumes the following environment variables:
+
+| variable        | description                                                |
+| --------------- | ---------------------------------------------------------- |
+| SB_BENCH_UPLOAD | Upload results to GCP if set to tue                        |
+| GCP_CREDENTIALS | For upload, the GCP credentials to use as stringified JSON |
+| CIRCLE_BRANCH   | For upload, the branch if running in Circle CI             |
+| CIRCLE_SHA1     | For upload, the commit hash if running in Circle CI        |
