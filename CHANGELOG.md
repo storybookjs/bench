@@ -1,3 +1,7 @@
+### 0.5.0
+
+Accept extra SB flags
+
 ### 0.4.0
 
 Upload based on SB_BENCH_UPLOAD env variable
