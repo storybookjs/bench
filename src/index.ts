@@ -19,12 +19,18 @@ const save = async (results: Record<string, any>, label: string) => {
   fs.writeFileSync(`${label}.json`, JSON.stringify(results));
 };
 
-const benchmark = async (installCommand: string, label: string) => {
+interface Options {
+  installCommand: string;
+  label: string;
+  extraFlags: string[];
+}
+
+const benchmark = async ({ installCommand, label, extraFlags }: Options) => {
   await cleanup();
 
   const install = await installStorybook(installCommand);
-  const start = await startStorybook();
-  const { build, browse } = await buildBrowseStorybook();
+  const start = await startStorybook(extraFlags);
+  const { build, browse } = await buildBrowseStorybook(extraFlags);
 
   const bench = formatNumber({ install, start, build, browse });
   await save(bench, label);
@@ -39,15 +45,21 @@ export const main = async () => {
     'Save as <label>.csv/json and upload with <label> if SB_BENCH_UPLOAD is true',
     'bench'
   );
+  program.option(
+    '-e, --extra-flags <flags>',
+    'Run storybook with extra flags (e.g. "--no-dll")',
+    ''
+  );
   program.parse(process.argv);
   if (!program.args.length) {
     program.help();
   }
 
+  const { label, extraFlags } = program;
   const installCommand = program.args[0];
-  const label: string = program.label;
+  const flags = extraFlags.length > 0 ? extraFlags.split(' ') : [];
 
-  const bench = await benchmark(installCommand, label);
+  const bench = await benchmark({ installCommand, label, extraFlags: flags });
   if (SB_BENCH_UPLOAD) {
     await upload(bench, label);
   }

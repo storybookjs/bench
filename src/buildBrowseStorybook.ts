@@ -68,11 +68,11 @@ export const cleanup = async () => {
   rimraf.sync(BUILD_DIR);
 };
 
-export const buildBrowseStorybook = async () => {
+export const buildBrowseStorybook = async (extraFlags: string[]) => {
   console.log('measuring build-storybook');
 
   Tick.wrap(function build(done: () => void) {
-    spawnSync('yarn', ['build-storybook'], { stdio: STDIO });
+    spawnSync('yarn', ['build-storybook', ...extraFlags], { stdio: STDIO });
     done();
   });
 

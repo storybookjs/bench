@@ -8,7 +8,7 @@ const DEV_PORT = 9999;
 
 const logger = console;
 
-export const startStorybook = async () => {
+export const startStorybook = async (extraFlags: string[]) => {
   console.log('measuring start-storybook');
 
   let resolveBuild: any;
@@ -24,7 +24,7 @@ export const startStorybook = async () => {
   const stats = resetStats();
   const child = spawn(
     'yarn',
-    ['start-storybook', '-p', DEV_PORT.toString(), '--ci'],
+    ['start-storybook', '-p', DEV_PORT.toString(), '--ci', ...extraFlags],
     {
       stdio: 'pipe',
     }
