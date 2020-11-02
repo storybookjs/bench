@@ -1,3 +1,7 @@
+### 0.5.1
+
+Safe DU for removed DLLs
+
 ### 0.5.0
 
 Accept extra SB flags
