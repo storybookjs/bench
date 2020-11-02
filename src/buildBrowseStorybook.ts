@@ -37,14 +37,24 @@ const bundleSize = async (buildDir: string, prefix: string) => {
   };
 };
 
+const safeDu = async (filePath: string) => {
+  try {
+    return await du(filePath);
+  } catch {
+    return 0;
+  }
+};
+
 export const bundleSizes = async (buildDir: string) => {
   const main = await bundleSize(buildDir, 'main');
   const runtime = await bundleSize(buildDir, 'runtime');
   const vendors = await bundleSize(buildDir, 'vendors');
-  const docsDll = await du(
+  const docsDll = await safeDu(
     path.join(buildDir, 'sb_dll', 'storybook_docs_dll.js')
   );
-  const uiDll = await du(path.join(buildDir, 'sb_dll', 'storybook_ui_dll.js'));
+  const uiDll = await safeDu(
+    path.join(buildDir, 'sb_dll', 'storybook_ui_dll.js')
+  );
 
   return {
     manager: {
