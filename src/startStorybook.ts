@@ -3,7 +3,8 @@ import { resetStats, makeStatsServer, puppeteerArgs } from './helpers/timing';
 import Hapi from '@hapi/hapi';
 import puppeteer from 'puppeteer';
 
-const WEBPACK_REGEX = /^.\s+(\d*\.?\d*) s for manager and (\d*\.?\d*) s for preview/gm;
+const MANAGER_PREVIEW_REGEX = /^.\s+(\d*\.?\d*) s for manager and (\d*\.?\d*) s for preview/gm;
+const PREVIEW_REGEX = /^.\s+(\d*\.?\d*) s for preview/gm;
 const DEV_PORT = 9999;
 
 const logger = console;
@@ -35,11 +36,18 @@ export const startStorybook = async (extraFlags: string[]) => {
   child.stdout.on('data', data => {
     //│   8.42 s for manager and 8.86 s for preview       │
     const output = data.toString();
-    const match = WEBPACK_REGEX.exec(output);
+    let match = MANAGER_PREVIEW_REGEX.exec(output);
     if (match) {
       console.log({ match });
       managerWebpack = 1000000000 * parseFloat(match[1]);
       previewWebpack = 1000000000 * parseFloat(match[2]);
+      resolveBuild();
+    }
+    match = PREVIEW_REGEX.exec(output);
+    if (match) {
+      console.log({ match });
+      managerWebpack = 0;
+      previewWebpack = 1000000000 * parseFloat(match[1]);
       resolveBuild();
     }
   });
