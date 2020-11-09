@@ -1,3 +1,7 @@
+### 0.6.0
+
+Don't install anything if no install command provided
+
 ### 0.5.1
 
 Safe DU for removed DLLs
