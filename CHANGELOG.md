@@ -1,3 +1,7 @@
+### 0.6.1
+
+Fix handling for cached manager
+
 ### 0.6.0
 
 Don't install anything if no install command provided
