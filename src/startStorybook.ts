@@ -34,8 +34,8 @@ export const startStorybook = async (extraFlags: string[]) => {
   let managerWebpack = -1;
   let previewWebpack = -1;
   child.stdout.on('data', data => {
-    //│   8.42 s for manager and 8.86 s for preview       │
     const output = data.toString();
+    //│   8.42 s for manager and 8.86 s for preview       │
     let match = MANAGER_PREVIEW_REGEX.exec(output);
     if (match) {
       console.log({ match });
@@ -43,6 +43,7 @@ export const startStorybook = async (extraFlags: string[]) => {
       previewWebpack = 1000000000 * parseFloat(match[2]);
       resolveBuild();
     }
+    //│   8.86 s for preview       │
     match = PREVIEW_REGEX.exec(output);
     if (match) {
       console.log({ match });
