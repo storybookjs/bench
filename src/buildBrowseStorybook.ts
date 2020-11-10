@@ -12,17 +12,23 @@ import { makeStaticServer, STATIC_STORYBOOK_PORT } from './helpers/static';
 const STDIO = 'inherit';
 const BUILD_DIR = 'storybook-static';
 
+const SCRIPT_REGEX = /<script src="(.[^"]*\.js)">/g;
 const logger = console;
 
-const bundleSize = async (buildDir: string, prefix: string) => {
+const getScripts = (html: string) => {
+  // <script src="runtime~main.6a9b04192e3176eff72a.bundle.js">
+  return Array.from(html.matchAll(SCRIPT_REGEX)).map(m => m[1]);
+};
+
+const bundleSize = async (
+  buildDir: string,
+  prefix: string,
+  iframeScripts: string[],
+  indexScripts: string[]
+) => {
   const files = fs.readdirSync(buildDir);
-  const mapFilePrefix = files
-    .find(name => name.startsWith(prefix) && name.endsWith('.js.map'))
-    ?.replace('.map', '');
-  const preview = files.find(name => name === mapFilePrefix);
-  const manager = files.find(
-    name => name.startsWith(prefix) && name.endsWith('.js') && name !== preview
-  );
+  const preview = iframeScripts.find(f => f.startsWith(prefix));
+  const manager = indexScripts.find(f => f.startsWith(prefix));
   if (!manager || !preview) {
     throw new Error(
       `Unexpected matches for '${prefix}': ${JSON.stringify({
@@ -46,9 +52,15 @@ const safeDu = async (filePath: string) => {
 };
 
 export const bundleSizes = async (buildDir: string) => {
-  const main = await bundleSize(buildDir, 'main');
-  const runtime = await bundleSize(buildDir, 'runtime');
-  const vendors = await bundleSize(buildDir, 'vendors');
+  const iframe = getScripts(
+    fs.readFileSync(path.join(buildDir, 'iframe.html')).toString()
+  );
+  const index = getScripts(
+    fs.readFileSync(path.join(buildDir, 'index.html')).toString()
+  );
+  const main = await bundleSize(buildDir, 'main', iframe, index);
+  const runtime = await bundleSize(buildDir, 'runtime', iframe, index);
+  const vendors = await bundleSize(buildDir, 'vendors', iframe, index);
   const docsDll = await safeDu(
     path.join(buildDir, 'sb_dll', 'storybook_docs_dll.js')
   );
