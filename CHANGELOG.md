@@ -1,3 +1,7 @@
+### 0.6.2
+
+Fix bundle size if no sourcemaps are generated
+
 ### 0.6.1
 
 Fix handling for cached manager
