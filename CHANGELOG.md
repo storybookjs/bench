@@ -1,3 +1,7 @@
+### 0.6.3
+
+Add yarn2 support
+
 ### 0.6.2
 
 Fix bundle size if no sourcemaps are generated
