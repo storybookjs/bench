@@ -28,7 +28,15 @@ const bundleSize = async (
 ) => {
   const files = fs.readdirSync(buildDir);
   const preview = iframeScripts.find(f => f.startsWith(prefix));
-  const manager = indexScripts.find(f => f.startsWith(prefix));
+  let manager = indexScripts.find(f => f.startsWith(prefix));
+
+  // FIXME: webpack5 uses `290.d3d846e4d074e7386081.bundle.js`
+  if (!manager && prefix === 'vendors') {
+    manager = indexScripts.find(
+      f => !f.startsWith('main') && !f.startsWith('runtime')
+    );
+  }
+
   if (!manager || !preview) {
     throw new Error(
       `Unexpected matches for '${prefix}': ${JSON.stringify({
