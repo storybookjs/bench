@@ -1,3 +1,7 @@
+### 0.6.4
+
+Support webpack5 manager in a hacky way
+
 ### 0.6.3
 
 Add yarn2 support
