@@ -28,6 +28,9 @@ It also accepts the following flags:
 | option          | description                                                                 |
 | --------------- | --------------------------------------------------------------------------- |
 | --label <label> | Save as <label>.csv/json and upload with <label> if SB_BENCH_UPLOAD is true |
+| --no-install    | Do not measure storybook install time                                       |
+| --no-start      | Do not measure storybook start time                                         |
+| --no-browse     | Do not measure storybook browse time                                        |
 
 ## Environment variables
 
