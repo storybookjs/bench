@@ -22,8 +22,10 @@ export const installAddonBench = async () => {
   });
   const mainFile = '.storybook/main.js';
   const main = fs.readFileSync(mainFile).toString();
-  const mainWithBench = insertAddonBench(main);
-  fs.writeFileSync(mainFile, mainWithBench);
+  if (!main.includes('@storybook/addon-bench')) {
+    const mainWithBench = insertAddonBench(main);
+    fs.writeFileSync(mainFile, mainWithBench);
+  }
 };
 
 const isUsingYarn1 = (): boolean => {
