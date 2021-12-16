@@ -31,7 +31,7 @@ const bundleSize = async (
   let manager = indexScripts.find(f => f.startsWith(prefix));
 
   // FIXME: webpack5 uses `290.d3d846e4d074e7386081.bundle.js`
-  if (!manager && prefix === 'vendors') {
+  if (prefix === 'vendors') {
     manager = indexScripts.find(
       f => !f.startsWith('main') && !f.startsWith('runtime')
     );
