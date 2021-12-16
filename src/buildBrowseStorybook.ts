@@ -26,15 +26,19 @@ const bundleSize = async (
   iframeScripts: string[],
   indexScripts: string[]
 ) => {
-  const files = fs.readdirSync(buildDir);
-  const preview = iframeScripts.find(f => f.startsWith(prefix));
+  let preview = iframeScripts.find(f => f.startsWith(prefix));
   let manager = indexScripts.find(f => f.startsWith(prefix));
 
   // FIXME: webpack5 uses `290.d3d846e4d074e7386081.bundle.js`
   if (prefix === 'vendors') {
-    manager = indexScripts.find(
-      f => !f.startsWith('main') && !f.startsWith('runtime')
-    );
+    manager =
+      manager ||
+      indexScripts.find(f => !f.startsWith('main') && !f.startsWith('runtime'));
+    preview =
+      preview ||
+      iframeScripts.find(
+        f => !f.startsWith('main') && !f.startsWith('runtime')
+      );
   }
 
   if (!manager || !preview) {
