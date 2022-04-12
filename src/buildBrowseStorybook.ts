@@ -12,7 +12,7 @@ import { makeStaticServer, STATIC_STORYBOOK_PORT } from './helpers/static';
 const STDIO = 'inherit';
 const BUILD_DIR = 'storybook-static';
 
-const SCRIPT_REGEX = /<script src="(.[^"]*\.js)">/g;
+const SCRIPT_REGEX = /<script.*?src="(.[^"]*\.js)">/g;
 const logger = console;
 
 const getScripts = (html: string) => {
@@ -41,17 +41,18 @@ const bundleSize = async (
       );
   }
 
-  if (!manager || !preview) {
-    throw new Error(
-      `Unexpected matches for '${prefix}': ${JSON.stringify({
-        manager,
-        preview,
-      })}`
-    );
+  // FIXME: vite uses '/assets/iframe.d7d1f891.js`, no vendors or runtime
+  if (!preview && prefix === 'main') {
+    preview = iframeScripts.find(f => f.startsWith('/assets/iframe'));
   }
+
+  if (!manager) {
+    throw new Error(`Missing manager files for '${prefix}')}`);
+  }
+
   return {
     manager: await du(path.join(buildDir, manager)),
-    preview: await du(path.join(buildDir, preview)),
+    preview: preview ? await du(path.join(buildDir, preview)) : 0,
   };
 };
 
@@ -70,15 +71,14 @@ export const bundleSizes = async (buildDir: string) => {
   const index = getScripts(
     fs.readFileSync(path.join(buildDir, 'index.html')).toString()
   );
-  const main = await bundleSize(buildDir, 'main', iframe, index);
-  const runtime = await bundleSize(buildDir, 'runtime', iframe, index);
-  const vendors = await bundleSize(buildDir, 'vendors', iframe, index);
-  const docsDll = await safeDu(
-    path.join(buildDir, 'sb_dll', 'storybook_docs_dll.js')
-  );
-  const uiDll = await safeDu(
-    path.join(buildDir, 'sb_dll', 'storybook_ui_dll.js')
-  );
+
+  const [main, runtime, vendors, docsDll, uiDll] = await Promise.all([
+    bundleSize(buildDir, 'main', iframe, index),
+    bundleSize(buildDir, 'runtime', iframe, index),
+    bundleSize(buildDir, 'vendors', iframe, index),
+    safeDu(path.join(buildDir, 'sb_dll', 'storybook_docs_dll.js')),
+    safeDu(path.join(buildDir, 'sb_dll', 'storybook_ui_dll.js')),
+  ]);
 
   return {
     manager: {
