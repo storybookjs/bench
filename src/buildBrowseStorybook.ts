@@ -12,7 +12,7 @@ import { makeStaticServer, STATIC_STORYBOOK_PORT } from './helpers/static';
 const STDIO = 'inherit';
 const BUILD_DIR = 'storybook-static';
 
-const SCRIPT_REGEX = /<script src="(.[^"]*\.js)">/g;
+const SCRIPT_REGEX = /<script.*?src="(.[^"]*\.js)">/g;
 const logger = console;
 
 const getScripts = (html: string) => {
