@@ -41,17 +41,18 @@ const bundleSize = async (
       );
   }
 
-  if (!manager || !preview) {
-    throw new Error(
-      `Unexpected matches for '${prefix}': ${JSON.stringify({
-        manager,
-        preview,
-      })}`
-    );
+  // FIXME: vite uses '/assets/iframe.d7d1f891.js`, no vendors or runtime
+  if (!preview && prefix === 'main') {
+    preview = iframeScripts.find(f => f.startsWith('/assets/iframe'));
   }
+
+  if (!manager) {
+    throw new Error(`Missing manager files for '${prefix}')}`);
+  }
+
   return {
     manager: await du(path.join(buildDir, manager)),
-    preview: await du(path.join(buildDir, preview)),
+    preview: preview ? await du(path.join(buildDir, preview)) : 0,
   };
 };
 
