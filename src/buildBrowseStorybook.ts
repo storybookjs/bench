@@ -70,15 +70,14 @@ export const bundleSizes = async (buildDir: string) => {
   const index = getScripts(
     fs.readFileSync(path.join(buildDir, 'index.html')).toString()
   );
-  const main = await bundleSize(buildDir, 'main', iframe, index);
-  const runtime = await bundleSize(buildDir, 'runtime', iframe, index);
-  const vendors = await bundleSize(buildDir, 'vendors', iframe, index);
-  const docsDll = await safeDu(
-    path.join(buildDir, 'sb_dll', 'storybook_docs_dll.js')
-  );
-  const uiDll = await safeDu(
-    path.join(buildDir, 'sb_dll', 'storybook_ui_dll.js')
-  );
+
+  const [main, runtime, vendors, docsDll, uiDll] = await Promise.all([
+    bundleSize(buildDir, 'main', iframe, index),
+    bundleSize(buildDir, 'runtime', iframe, index),
+    bundleSize(buildDir, 'vendors', iframe, index),
+    safeDu(path.join(buildDir, 'sb_dll', 'storybook_docs_dll.js')),
+    safeDu(path.join(buildDir, 'sb_dll', 'storybook_ui_dll.js')),
+  ]);
 
   return {
     manager: {
