@@ -11,7 +11,7 @@ import { formatNumber } from './helpers/format';
 import { SB_BENCH_UPLOAD } from './environment';
 
 const stub = (arg?: any) => ({ time: {}, size: {} });
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 const save = async (results: Record<string, any>, label: string) => {
   const csv = await jsonexport(results);
