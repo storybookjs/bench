@@ -1,6 +1,6 @@
 # Storybook Bench
 
-A benchmark for Storybook. Usage:
+A simple benchmark for Storybook. Usage:
 
 ```
 sb-bench 'npx sb init'
@@ -19,7 +19,7 @@ This will:
   - Measure page load time
   - Measure bundle sizes
 
-It outputs all results to the files `bench.csv` and `bench.json`.
+It outputs all results to the files `bench.csv` and `bench.json` and uploads results to a BigQuery data warehouse if `SB_BENCH_UPLOAD` and `GCP_CREDENTIALS` environment variables are set.
 
 ## Flags
 
