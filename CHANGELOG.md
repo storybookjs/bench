@@ -2,6 +2,23 @@
 
 #### 🐛 Bug Fix
 
+- Update README.md [#8](https://github.com/storybookjs/bench/pull/8) ([@shilman](https://github.com/shilman))
+- Fix prettier formatting [#7](https://github.com/storybookjs/bench/pull/7) ([@shilman](https://github.com/shilman))
+
+#### ⚠️ Pushed to `master`
+
+- Update README.md ([@shilman](https://github.com/shilman))
+
+#### Authors: 1
+
+- Michael Shilman ([@shilman](https://github.com/shilman))
+
+---
+
+# v0.7.1 (Wed Apr 13 2022)
+
+#### 🐛 Bug Fix
+
 - Fix prettier formatting [#7](https://github.com/storybookjs/bench/pull/7) ([@shilman](https://github.com/shilman))
 
 #### ⚠️ Pushed to `master`
