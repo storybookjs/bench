@@ -1,3 +1,15 @@
+# v0.7.3 (Mon Apr 18 2022)
+
+#### 🐛 Bug Fix
+
+- Use `yarn storybook` for `sb dev` compatibility [#9](https://github.com/storybookjs/bench/pull/9) ([@shilman](https://github.com/shilman))
+
+#### Authors: 1
+
+- Michael Shilman ([@shilman](https://github.com/shilman))
+
+---
+
 # v0.7.1 (Wed Apr 13 2022)
 
 #### 🐛 Bug Fix
