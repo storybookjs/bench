@@ -25,7 +25,7 @@ export const startStorybook = async (extraFlags: string[]) => {
   const stats = resetStats();
   const child = spawn(
     'yarn',
-    ['start-storybook', '-p', DEV_PORT.toString(), '--ci', ...extraFlags],
+    ['storybook', '-p', DEV_PORT.toString(), '--ci', ...extraFlags],
     {
       stdio: 'pipe',
     }
