@@ -38,15 +38,15 @@ const benchmark = async ({
 }: Options) => {
   await cleanup();
 
-  const install = benchmarks.install
-    ? await installStorybook(installCommand)
-    : {};
-  const start = benchmarks.start ? await startStorybook(extraFlags) : {};
-  const browse = benchmarks.browse
-    ? await buildBrowseStorybook(extraFlags)
-    : { build: {}, browse: {} };
+  const start = await startStorybook(extraFlags);
+  let bench;
+  if (installCommand) {
+    const { build, browse } = await buildBrowseStorybook(extraFlags);
+    bench = formatNumber({ start, build, browse });
+  } else {
+    bench = formatNumber({ start });
+  }
 
-  const bench = formatNumber({ install, start, ...browse });
   await save(bench, label);
 
   return bench;
