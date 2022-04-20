@@ -1,6 +1,6 @@
 import Hapi from '@hapi/hapi';
 
-export const EVENTS = ['managerRender', 'previewRender']; // , 'storyRender'
+export const EVENTS = ['managerRender', 'previewRender', 'storyRender'];
 export const STATS_PORT = 9898;
 
 export type Stats = {
@@ -31,7 +31,7 @@ export const makeStatsServer = async (stats: Stats, done: any) => {
         if (!stats.time[event]) {
           stats.time[event] = (now() - stats.init) * 1000000;
         }
-        if (event === 'previewRender') {
+        if (event === 'storyRender') {
           done();
         }
         return h.response('ok').code(200);
