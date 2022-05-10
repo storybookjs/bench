@@ -1,3 +1,15 @@
+# v0.7.4 (Tue May 10 2022)
+
+#### ⚠️ Pushed to `master`
+
+- Revert "Use `yarn storybook` for `sb dev` compatibility" ([@shilman](https://github.com/shilman))
+
+#### Authors: 1
+
+- Michael Shilman ([@shilman](https://github.com/shilman))
+
+---
+
 # v0.7.3 (Mon Apr 18 2022)
 
 #### 🐛 Bug Fix
