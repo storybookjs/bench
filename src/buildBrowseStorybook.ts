@@ -4,9 +4,9 @@ import du from 'du';
 import fs from 'fs';
 import path from 'path';
 import rimraf from 'rimraf';
-import puppeteer from 'puppeteer';
+import { chromium } from 'playwright';
 
-import { resetStats, makeStatsServer, puppeteerArgs } from './helpers/timing';
+import { resetStats, makeStatsServer, chromiumArgs } from './helpers/timing';
 import { makeStaticServer, STATIC_STORYBOOK_PORT } from './helpers/static';
 
 const STDIO = 'inherit';
@@ -116,7 +116,7 @@ export const buildBrowseStorybook = async (extraFlags: string[]) => {
   });
 
   const stats = resetStats();
-  const browser = await puppeteer.launch({ args: puppeteerArgs });
+  const browser = await chromium.launch({ args: chromiumArgs });
 
   const staticServer = await makeStaticServer();
 
@@ -128,7 +128,7 @@ export const buildBrowseStorybook = async (extraFlags: string[]) => {
     await statsServer.stop();
     logger.log('stopping static server');
     await staticServer.stop();
-    logger.log('closing puppeteer');
+    logger.log('closing browser');
     await browser.close();
   });
 
