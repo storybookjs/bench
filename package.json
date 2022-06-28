@@ -15,9 +15,9 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsdx build",
+    "build": "tsdx build --target node --format cjs",
     "lint": "tsdx lint",
-    "prepare": "tsdx build",
+    "prepare": "yarn build",
     "release": "yarn build && auto shipit",
     "start": "tsdx watch",
     "test": "tsdx test"

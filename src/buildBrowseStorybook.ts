@@ -35,8 +35,8 @@ const bundleSize = async (buildDir: string, prefix: string, iframeScripts: strin
     preview = iframeScripts.find(f => f.startsWith('/assets/iframe'));
   }
 
-  if (await fs.pathExists(path.join(buildDir, 'sb-runtime'))) {
-    manager = 'sb-runtime';
+  if (await fs.pathExists(path.join(buildDir, 'sb-manager'))) {
+    manager = 'sb-manager';
   }
 
   if (!manager) {
