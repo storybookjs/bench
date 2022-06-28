@@ -6,9 +6,7 @@ const STDIO = 'inherit';
 
 const insertAddonBench = (main: string) => {
   const lines = main.split('\n');
-  const updated = lines.map(line =>
-    line.replace(ADDONS_REGEX, '$1 "@storybook/addon-bench",')
-  );
+  const updated = lines.map(line => line.replace(ADDONS_REGEX, '$1 "@storybook/addon-bench",'));
   return updated.join('\n');
 };
 
