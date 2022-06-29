@@ -4,9 +4,7 @@ import prettyBytes from 'pretty-bytes';
 const prettyTime = (duration: number) => (duration / 1000000000.0).toFixed(2);
 
 const mapValuesDeep = (obj: any, formatFn: any): any =>
-  typeof obj === 'object'
-    ? mapValues(obj, val => mapValuesDeep(val, formatFn))
-    : formatFn(obj);
+  typeof obj === 'object' ? mapValues(obj, val => mapValuesDeep(val, formatFn)) : formatFn(obj);
 
 export const formatString = (result: Record<string, any>) => ({
   time: mapValuesDeep(result.time, prettyTime),

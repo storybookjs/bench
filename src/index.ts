@@ -30,21 +30,12 @@ interface Options {
   };
 }
 
-const benchmark = async ({
-  installCommand,
-  label,
-  extraFlags,
-  benchmarks,
-}: Options) => {
+const benchmark = async ({ installCommand, label, extraFlags, benchmarks }: Options) => {
   await cleanup();
 
-  const install = benchmarks.install
-    ? await installStorybook(installCommand)
-    : {};
+  const install = benchmarks.install ? await installStorybook(installCommand) : {};
   const start = benchmarks.start ? await startStorybook(extraFlags) : {};
-  const browse = benchmarks.browse
-    ? await buildBrowseStorybook(extraFlags)
-    : { build: {}, browse: {} };
+  const browse = benchmarks.browse ? await buildBrowseStorybook(extraFlags) : { build: {}, browse: {} };
 
   const bench = formatNumber({ install, start, ...browse });
   await save(bench, label);
@@ -59,11 +50,7 @@ export const main = async () => {
     'Save as <label>.csv/json and upload with <label> if SB_BENCH_UPLOAD is true',
     'bench'
   );
-  program.option(
-    '-e, --extra-flags <flags>',
-    'Run storybook with extra flags (e.g. "--no-dll")',
-    ''
-  );
+  program.option('-e, --extra-flags <flags>', 'Run storybook with extra flags (e.g. "--no-dll")', '');
   program.option('--no-install', 'Do not measure storybook install time');
   program.option('--no-start', 'Do not measure storybook start time');
   program.option('--no-browse', 'Do not measure storybook browse time');

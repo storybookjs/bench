@@ -23,13 +23,9 @@ export const startStorybook = async (extraFlags: string[]) => {
   });
 
   const stats = resetStats();
-  const child = spawn(
-    'yarn',
-    ['storybook', '-p', DEV_PORT.toString(), '--ci', ...extraFlags],
-    {
-      stdio: 'pipe',
-    }
-  );
+  const child = spawn('yarn', ['storybook', '-p', DEV_PORT.toString(), '--ci', ...extraFlags], {
+    stdio: 'pipe',
+  });
 
   let managerWebpack = -1;
   let previewWebpack = -1;
