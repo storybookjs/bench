@@ -8,7 +8,7 @@ export type Stats = {
   time: Record<string, number | null>;
 };
 
-export const puppeteerArgs = ['--no-sandbox', '--disable-setuid-sandbox'];
+export const chromiumArgs = ['--no-sandbox', '--disable-setuid-sandbox'];
 
 const now = () => new Date().getTime();
 

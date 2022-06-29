@@ -3,11 +3,13 @@
 A simple benchmark for Storybook. Usage:
 
 ```
-sb-bench 'npx sb init'
+npx playwright install
+npx @storybook/bench 'npx sb init'
 ```
 
 This will:
 
+- Install playwright browsers (unnecessary if you've already installed playwright on your machine)
 - Install storybook using `sb init` (or whatever command is provided)
   - Measure install time and size
 - Start
