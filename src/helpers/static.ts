@@ -6,6 +6,7 @@ export const STATIC_STORYBOOK_PORT = 9899;
 
 export const makeStaticServer = async () => {
   const server = new Hapi.Server({
+    host: 'localhost',
     port: STATIC_STORYBOOK_PORT,
   });
   await server.register(Inert);
