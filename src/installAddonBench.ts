@@ -11,7 +11,7 @@ const insertAddonBench = (main: string) => {
 };
 
 export const installAddonBench = async () => {
-  let commandArgs = ['add', '@storybook/addon-bench', '--dev'];
+  let commandArgs = ['add', '@storybook/addon-bench@0.0.3-canary.4.cc1f164.0', '--dev'];
   if (isUsingYarn1()) {
     commandArgs.push('-W');
   }
