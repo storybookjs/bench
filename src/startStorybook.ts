@@ -24,12 +24,14 @@ export const startStorybook = async (extraFlags: string[]) => {
 
   const stats = resetStats();
   const child = spawn('yarn', ['storybook', '-p', DEV_PORT.toString(), '--ci', ...extraFlags], {
-    stdio: 'pipe',
+    // For some reason, storybook dev server hangs on my dev machine (and Norbert's) if we capture
+    // stderr, so just let it go through & only capture stdout for usage below
+    stdio: ['inherit', 'pipe', 'inherit'],
   });
 
   let managerWebpack = -1;
   let previewWebpack = -1;
-  child.stdout.on('data', data => {
+  child.stdout.on('data', (data) => {
     const output = data.toString();
     //│   8.42 s for manager and 8.86 s for preview       │
     let match = MANAGER_PREVIEW_REGEX.exec(output);
