@@ -17,22 +17,22 @@ const logger = console;
 
 const getScripts = (html: string) => {
   // <script src="runtime~main.6a9b04192e3176eff72a.bundle.js">
-  return Array.from(html.matchAll(SCRIPT_REGEX)).map(m => m[1]);
+  return Array.from(html.matchAll(SCRIPT_REGEX)).map((m) => m[1]);
 };
 
 const bundleSize = async (buildDir: string, prefix: string, iframeScripts: string[], indexScripts: string[]) => {
-  let preview = iframeScripts.find(f => f.startsWith(prefix));
-  let manager = indexScripts.find(f => f.startsWith(prefix));
+  let preview = iframeScripts.find((f) => f.startsWith(prefix));
+  let manager = indexScripts.find((f) => f.startsWith(prefix));
 
   // FIXME: webpack5 uses `290.d3d846e4d074e7386081.bundle.js`
   if (prefix === 'vendors') {
-    manager = manager || indexScripts.find(f => !f.startsWith('main') && !f.startsWith('runtime'));
-    preview = preview || iframeScripts.find(f => !f.startsWith('main') && !f.startsWith('runtime'));
+    manager = manager || indexScripts.find((f) => !f.startsWith('main') && !f.startsWith('runtime'));
+    preview = preview || iframeScripts.find((f) => !f.startsWith('main') && !f.startsWith('runtime'));
   }
 
   // FIXME: vite uses '/assets/iframe.d7d1f891.js`, no vendors or runtime
   if (!preview && prefix === 'main') {
-    preview = iframeScripts.find(f => f.startsWith('/assets/iframe'));
+    preview = iframeScripts.find((f) => f.startsWith('/assets/iframe'));
   }
 
   if (await fs.pathExists(path.join(buildDir, 'sb-manager'))) {
@@ -122,7 +122,7 @@ export const buildBrowseStorybook = async (extraFlags: string[]) => {
   });
 
   const page = await browser.newPage();
-  await page.goto(`http://127.0.0.1:${STATIC_STORYBOOK_PORT}/index.html`);
+  await page.goto(`http://localhost:${STATIC_STORYBOOK_PORT}/index.html`);
 
   await promise;
 
