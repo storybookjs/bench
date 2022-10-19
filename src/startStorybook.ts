@@ -3,11 +3,42 @@ import { resetStats, makeStatsServer, chromiumArgs } from './helpers/timing';
 import Hapi from '@hapi/hapi';
 import { chromium } from 'playwright';
 
-const MANAGER_PREVIEW_REGEX = /^.\s+(\d*\.?\d*) s for manager and (\d*\.?\d*) s for preview/gm;
-const PREVIEW_REGEX = /^.\s+(\d*\.?\d*) s for preview/gm;
 const DEV_PORT = 9999;
+const MANAGER_PREVIEW_REGEX = /^.\s+(\d+\.?\d*) (m?s) for manager and (\d+\.?\d*) (m?s) for preview/m;
+const PREVIEW_REGEX = /^.\s+(\d+\.?\d*) (m?s) for preview/m;
 
 const logger = console;
+
+const parseTime = (num: string, units: string) => {
+  if (units === 'ms') {
+    return 1000000 * parseFloat(num);
+  }
+  if (units === 's') {
+    return 1000000000 * parseFloat(num);
+  }
+  throw new Error(`Unexpected unit of time ${units}`);
+};
+
+export const parseDevOutput = (output: string) => {
+  //│   8.42 s for manager and 8.86 s for preview       │
+  const match = MANAGER_PREVIEW_REGEX.exec(output);
+  if (match) {
+    return {
+      manager: parseTime(match[1], match[2]),
+      preview: parseTime(match[3], match[4]),
+    };
+  }
+  //│   8.86 s for preview       │
+  const match1 = PREVIEW_REGEX.exec(output);
+  if (match1) {
+    return {
+      manager: 0,
+      preview: parseTime(match1[1], match1[2]),
+    };
+  }
+
+  return undefined;
+};
 
 export const startStorybook = async (extraFlags: string[]) => {
   console.log('measuring start-storybook');
@@ -33,20 +64,11 @@ export const startStorybook = async (extraFlags: string[]) => {
   let previewWebpack = -1;
   child.stdout.on('data', data => {
     const output = data.toString();
-    //│   8.42 s for manager and 8.86 s for preview       │
-    let match = MANAGER_PREVIEW_REGEX.exec(output);
-    if (match) {
-      console.log({ match });
-      managerWebpack = 1000000000 * parseFloat(match[1]);
-      previewWebpack = 1000000000 * parseFloat(match[2]);
-      resolveBuild();
-    }
-    //│   8.86 s for preview       │
-    match = PREVIEW_REGEX.exec(output);
-    if (match) {
-      console.log({ match });
-      managerWebpack = 0;
-      previewWebpack = 1000000000 * parseFloat(match[1]);
+    const parsed = parseDevOutput(output);
+    if (parsed) {
+      const { manager, preview } = parsed;
+      previewWebpack = preview;
+      managerWebpack = manager;
       resolveBuild();
     }
   });
