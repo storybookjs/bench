@@ -10,6 +10,10 @@ const insertAddonBench = (main: string) => {
   return updated.join('\n');
 };
 
+const findMainJs = () => {
+  return ['js', 'cjs', 'mjs', 'ts'].map(suffix => `.storybook/main.${suffix}`).find(fname => fs.existsSync(fname));
+};
+
 export const installAddonBench = async () => {
   let commandArgs = ['add', '@storybook/addon-bench@0.0.3-canary.4.cc1f164.0', '--dev'];
   if (isUsingYarn1()) {
@@ -18,7 +22,8 @@ export const installAddonBench = async () => {
   spawnSync('yarn', commandArgs, {
     stdio: STDIO,
   });
-  const mainFile = '.storybook/main.js';
+  const mainFile = findMainJs();
+  if (!mainFile) throw new Error('No main.js found!');
   const main = fs.readFileSync(mainFile).toString();
   if (!main.includes('@storybook/addon-bench')) {
     const mainWithBench = insertAddonBench(main);
