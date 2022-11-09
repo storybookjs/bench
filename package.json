@@ -2,7 +2,9 @@
   "name": "@storybook/bench",
   "version": "0.7.5",
   "license": "MIT",
+  "author": "Michael Shilman",
   "main": "dist/index.js",
+  "module": "dist/sb-bench.esm.js",
   "typings": "dist/index.d.ts",
   "bin": {
     "sb-bench": "./bin/index.js",
@@ -12,66 +14,65 @@
     "bin",
     "dist"
   ],
-  "engines": {
-    "node": ">=12"
-  },
   "scripts": {
-    "start": "tsdx watch",
-    "build": "tsdx build",
-    "test": "tsdx test",
+    "build": "tsdx build --target node --format cjs",
     "lint": "tsdx lint",
-    "prepare": "tsdx build",
-    "release": "yarn build && auto shipit"
+    "prepare": "yarn build",
+    "release": "yarn build && auto shipit",
+    "start": "tsdx watch",
+    "test": "tsdx test"
   },
-  "peerDependencies": {},
   "husky": {
     "hooks": {
       "pre-commit": "tsdx lint"
     }
   },
   "prettier": {
-    "printWidth": 80,
+    "printWidth": 120,
     "semi": true,
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "author": "Michael Shilman",
-  "module": "dist/sb-bench.esm.js",
+  "dependencies": {
+    "@google-cloud/bigquery": "^5.2.0",
+    "@hapi/hapi": "^20.2.2",
+    "@hapi/inert": "^6.0.5",
+    "@types/fs-extra": "^9.0.13",
+    "commander": "^5.1.0",
+    "cross-spawn": "^7.0.3",
+    "du": "^1.0.0",
+    "exectimer": "^2.2.2",
+    "fs-extra": "^10.1.0",
+    "jsonexport": "^3.0.1",
+    "lodash": "^4.17.19",
+    "playwright": "^1.24.2",
+    "pretty-bytes": "^5.3.0",
+    "rimraf": "^3.0.2"
+  },
   "devDependencies": {
     "@auto-it/released": "^10.32.6",
     "@types/cross-spawn": "^6.0.2",
-    "@types/hapi__hapi": "^19.0.3",
-    "@types/hapi__inert": "^5.2.0",
+    "@types/hapi__hapi": "^20.0.12",
+    "@types/hapi__inert": "^5.2.3",
     "@types/lodash": "^4.14.157",
     "@types/node-fetch": "^2.5.7",
     "@types/puppeteer": "^3.0.1",
     "auto": "^10.3.0",
     "husky": "^4.2.5",
-    "tsdx": "^0.13.2",
-    "tslib": "^2.0.0",
-    "typescript": "^3.9.6"
+    "tsdx": "^0.14.1",
+    "tslib": "^2.4.0",
+    "typescript": "^4.7.4"
   },
-  "dependencies": {
-    "@google-cloud/bigquery": "^5.2.0",
-    "@hapi/hapi": "^19.1.1",
-    "@hapi/inert": "^6.0.1",
-    "commander": "^5.1.0",
-    "cross-spawn": "^7.0.3",
-    "du": "^1.0.0",
-    "exectimer": "^2.2.2",
-    "jsonexport": "^3.0.1",
-    "lodash": "^4.17.19",
-    "pretty-bytes": "^5.3.0",
-    "puppeteer": "^5.2.1",
-    "rimraf": "^3.0.2"
+  "engines": {
+    "node": ">=14"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "auto": {
     "plugins": [
       "npm",
       "released"
     ]
-  },
-  "publishConfig": {
-    "access": "public"
   }
 }

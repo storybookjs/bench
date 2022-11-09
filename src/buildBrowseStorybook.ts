@@ -1,12 +1,12 @@
 import { Tick, timers } from 'exectimer';
 import { sync as spawnSync } from 'cross-spawn';
 import du from 'du';
-import fs from 'fs';
+import fs from 'fs-extra';
 import path from 'path';
 import rimraf from 'rimraf';
-import puppeteer from 'puppeteer';
+import { chromium } from 'playwright';
 
-import { resetStats, makeStatsServer, puppeteerArgs } from './helpers/timing';
+import { resetStats, makeStatsServer, chromiumArgs } from './helpers/timing';
 import { makeStaticServer, STATIC_STORYBOOK_PORT } from './helpers/static';
 
 const STDIO = 'inherit';
@@ -20,30 +20,23 @@ const getScripts = (html: string) => {
   return Array.from(html.matchAll(SCRIPT_REGEX)).map(m => m[1]);
 };
 
-const bundleSize = async (
-  buildDir: string,
-  prefix: string,
-  iframeScripts: string[],
-  indexScripts: string[]
-) => {
+const bundleSize = async (buildDir: string, prefix: string, iframeScripts: string[], indexScripts: string[]) => {
   let preview = iframeScripts.find(f => f.startsWith(prefix));
   let manager = indexScripts.find(f => f.startsWith(prefix));
 
   // FIXME: webpack5 uses `290.d3d846e4d074e7386081.bundle.js`
   if (prefix === 'vendors') {
-    manager =
-      manager ||
-      indexScripts.find(f => !f.startsWith('main') && !f.startsWith('runtime'));
-    preview =
-      preview ||
-      iframeScripts.find(
-        f => !f.startsWith('main') && !f.startsWith('runtime')
-      );
+    manager = manager || indexScripts.find(f => !f.startsWith('main') && !f.startsWith('runtime'));
+    preview = preview || iframeScripts.find(f => !f.startsWith('main') && !f.startsWith('runtime'));
   }
 
   // FIXME: vite uses '/assets/iframe.d7d1f891.js`, no vendors or runtime
   if (!preview && prefix === 'main') {
     preview = iframeScripts.find(f => f.startsWith('/assets/iframe'));
+  }
+
+  if (await fs.pathExists(path.join(buildDir, 'sb-manager'))) {
+    manager = 'sb-manager';
   }
 
   if (!manager) {
@@ -65,15 +58,11 @@ const safeDu = async (filePath: string) => {
 };
 
 export const bundleSizes = async (buildDir: string) => {
-  const iframe = getScripts(
-    fs.readFileSync(path.join(buildDir, 'iframe.html')).toString()
-  );
-  const index = getScripts(
-    fs.readFileSync(path.join(buildDir, 'index.html')).toString()
-  );
+  const iframe = getScripts((await fs.readFile(path.join(buildDir, 'iframe.html'))).toString());
+  const index = getScripts((await fs.readFile(path.join(buildDir, 'index.html'))).toString());
 
   const [main, runtime, vendors, docsDll, uiDll] = await Promise.all([
-    bundleSize(buildDir, 'main', iframe, index),
+    bundleSize(buildDir, 'main', iframe, index), // in 7.0 versions this won't exist
     bundleSize(buildDir, 'runtime', iframe, index),
     bundleSize(buildDir, 'vendors', iframe, index),
     safeDu(path.join(buildDir, 'sb_dll', 'storybook_docs_dll.js')),
@@ -111,12 +100,15 @@ export const buildBrowseStorybook = async (extraFlags: string[]) => {
   });
 
   let resolve: any;
-  const promise = new Promise((res: any) => {
+  const promise = new Promise((res: any, rej) => {
     resolve = res;
+
+    // if the preview doesn't load in 40s, something is wrong
+    setTimeout(rej, 40000);
   });
 
   const stats = resetStats();
-  const browser = await puppeteer.launch({ args: puppeteerArgs });
+  const browser = await chromium.launch({ args: chromiumArgs });
 
   const staticServer = await makeStaticServer();
 
@@ -128,12 +120,12 @@ export const buildBrowseStorybook = async (extraFlags: string[]) => {
     await statsServer.stop();
     logger.log('stopping static server');
     await staticServer.stop();
-    logger.log('closing puppeteer');
+    logger.log('closing browser');
     await browser.close();
   });
 
   const page = await browser.newPage();
-  await page.goto(`http://127.0.0.1:${STATIC_STORYBOOK_PORT}/index.html`);
+  await page.goto(`http://localhost:${STATIC_STORYBOOK_PORT}/index.html`);
 
   await promise;
 

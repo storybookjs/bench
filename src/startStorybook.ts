@@ -1,7 +1,7 @@
 import { spawn } from 'cross-spawn';
-import { resetStats, makeStatsServer, puppeteerArgs } from './helpers/timing';
+import { resetStats, makeStatsServer, chromiumArgs } from './helpers/timing';
 import Hapi from '@hapi/hapi';
-import puppeteer from 'puppeteer';
+import { chromium } from 'playwright';
 
 const MANAGER_PREVIEW_REGEX = /^.\s+(\d*\.?\d*) s for manager and (\d*\.?\d*) s for preview/gm;
 const PREVIEW_REGEX = /^.\s+(\d*\.?\d*) s for preview/gm;
@@ -23,13 +23,11 @@ export const startStorybook = async (extraFlags: string[]) => {
   });
 
   const stats = resetStats();
-  const child = spawn(
-    'yarn',
-    ['storybook', '-p', DEV_PORT.toString(), '--ci', ...extraFlags],
-    {
-      stdio: 'pipe',
-    }
-  );
+  const child = spawn('yarn', ['storybook', '-p', DEV_PORT.toString(), '--ci', ...extraFlags], {
+    // For some reason, storybook dev server hangs on my dev machine (and Norbert's) if we capture
+    // stderr, so just let it go through & only capture stdout for usage below
+    stdio: ['inherit', 'pipe', 'inherit'],
+  });
 
   let managerWebpack = -1;
   let previewWebpack = -1;
@@ -58,14 +56,14 @@ export const startStorybook = async (extraFlags: string[]) => {
   });
   let statsServer: Hapi.Server;
 
-  const browser = await puppeteer.launch({ args: puppeteerArgs });
+  const browser = await chromium.launch({ args: chromiumArgs });
 
   statsServer = await makeStatsServer(stats, async () => {
     logger.log('killing start-storybook');
     child.kill();
     logger.log('stopping stats server');
     await statsServer.stop();
-    logger.log('closing puppeteer');
+    logger.log('closing browser');
     await browser.close();
   });
 

@@ -14,10 +14,7 @@ const _gitHelper = (args: string[]): string => {
 const gitBranch = () => _gitHelper(['rev-parse', '--abbrev-ref', 'HEAD']);
 const gitCommit = () => _gitHelper(['rev-parse', 'HEAD']);
 
-export const upload = async (
-  { install, start, build, browse }: any,
-  label: string
-) => {
+export const upload = async ({ install, start, build, browse }: any, label: string) => {
   console.log('uploading to label', label);
 
   const row = {

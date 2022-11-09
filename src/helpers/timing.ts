@@ -8,7 +8,7 @@ export type Stats = {
   time: Record<string, number | null>;
 };
 
-export const puppeteerArgs = ['--no-sandbox', '--disable-setuid-sandbox'];
+export const chromiumArgs = ['--no-sandbox', '--disable-setuid-sandbox'];
 
 const now = () => new Date().getTime();
 
@@ -20,7 +20,10 @@ export const resetStats = (stats?: Stats) => {
 };
 
 export const makeStatsServer = async (stats: Stats, done: any) => {
-  const server = new Hapi.Server({ port: STATS_PORT });
+  const server = new Hapi.Server({
+    host: 'localhost',
+    port: STATS_PORT,
+  });
 
   const addEvent = (event: string) => {
     server.route({

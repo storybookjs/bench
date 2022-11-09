@@ -6,14 +6,12 @@ const STDIO = 'inherit';
 
 const insertAddonBench = (main: string) => {
   const lines = main.split('\n');
-  const updated = lines.map(line =>
-    line.replace(ADDONS_REGEX, '$1 "@storybook/addon-bench",')
-  );
+  const updated = lines.map(line => line.replace(ADDONS_REGEX, '$1 "@storybook/addon-bench",'));
   return updated.join('\n');
 };
 
 export const installAddonBench = async () => {
-  let commandArgs = ['add', '@storybook/addon-bench', '--dev'];
+  let commandArgs = ['add', '@storybook/addon-bench@0.0.3-canary.4.cc1f164.0', '--dev'];
   if (isUsingYarn1()) {
     commandArgs.push('-W');
   }
