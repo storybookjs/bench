@@ -44,7 +44,8 @@ const bundleSize = async (buildDir: string, prefix: string, iframeScripts: strin
   }
 
   return {
-    manager: await du(path.join(buildDir, manager)),
+    // avoid triple-counting main.manger / runtime.manager / vendors.manager
+    manager: manager === 'sb-manager' && prefix !== 'main' ? 0 : await du(path.join(buildDir, manager)),
     preview: preview ? await du(path.join(buildDir, preview)) : 0,
   };
 };
