@@ -92,7 +92,7 @@ export const startStorybook = async (extraFlags: string[]) => {
   await buildFinished;
 
   const page = await browser.newPage();
-  await page.goto(`http://localhost:${DEV_PORT}/`);
+  await page.goto(`http://localhost:${DEV_PORT}/`, { waitUntil: 'domcontentloaded' });
 
   await renderFinished;
 
