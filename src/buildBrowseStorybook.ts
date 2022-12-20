@@ -126,7 +126,7 @@ export const buildBrowseStorybook = async (extraFlags: string[]) => {
   });
 
   const page = await browser.newPage();
-  await page.goto(`http://localhost:${STATIC_STORYBOOK_PORT}/index.html`);
+  await page.goto(`http://localhost:${STATIC_STORYBOOK_PORT}/index.html`, { waitUntil: 'domcontentloaded' });
 
   await promise;
 

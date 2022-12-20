@@ -92,7 +92,8 @@ export const startStorybook = async (extraFlags: string[]) => {
   await buildFinished;
 
   const page = await browser.newPage();
-  await page.goto(`http://localhost:${DEV_PORT}/`);
+  // why 'domcontentloaded' ? => https://github.com/storybookjs/bench/pull/18
+  await page.goto(`http://localhost:${DEV_PORT}/`, { waitUntil: 'domcontentloaded' });
 
   await renderFinished;
 
